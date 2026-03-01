@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NewsNova India - Digital News Portal</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f4f6f9}
+
+header{
+background:#0a1f44;
+color:white;
+padding:15px 0;
+}
+
+.container{width:90%;margin:auto}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+color:#ffcc00;
+cursor:pointer;
+}
+
+nav ul{list-style:none;display:flex;flex-wrap:wrap;margin-top:10px}
+nav ul li{margin-right:15px}
+nav ul li a{color:white;text-decoration:none;font-weight:bold;cursor:pointer}
+nav ul li a:hover{color:#ffcc00}
+
+.main{display:flex;margin-top:20px}
+.content{width:70%}
+.sidebar{width:30%;padding-left:20px}
+
+.news-card{
+background:white;
+padding:15px;
+margin-bottom:20px;
+border-radius:6px;
+box-shadow:0 0 10px rgba(0,0,0,0.1)
+}
+
+.news-card img{width:100%;border-radius:6px}
+
+.ad-box{
+background:#ddd;
+padding:20px;
+text-align:center;
+margin-bottom:20px
+}
+
+footer{
+background:#0a1f44;
+color:white;
+text-align:center;
+padding:20px;
+margin-top:30px
+}
+
+button{
+padding:8px 12px;
+background:#0a1f44;
+color:white;
+border:none;
+cursor:pointer
+}
+
+input,textarea,select{
+width:100%;
+padding:8px;
+margin:8px 0
+}
+
+.login-box,.admin-panel{
+background:white;
+padding:20px;
+width:400px;
+margin:40px auto;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.2)
+}
+
+.admin-panel{display:none}
+
+.hidden{display:none}
+
+@media(max-width:768px){
+.main{flex-direction:column}
+.content,.sidebar{width:100%;padding:0}
+.login-box,.admin-panel{width:95%}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+<div class="logo" onclick="showPage('home')">NewsNova India</div>
+
+<nav>
+<ul>
+<li><a onclick="showPage('home')">Home</a></li>
+<li><a onclick="filterCategory('Politics')">Politics</a></li>
+<li><a onclick="filterCategory('Sports')">Sports</a></li>
+<li><a onclick="filterCategory('Technology')">Technology</a></li>
+<li><a onclick="filterCategory('Entertainment')">Entertainment</a></li>
+<li><a onclick="showPage('about')">About</a></li>
+<li><a onclick="showPage('contact')">Contact</a></li>
+<li><a onclick="showAdmin()">Admin</a></li>
+</ul>
+</nav>
+</div>
+</header>
+
+<div class="container">
+
+<!-- HOME PAGE -->
+<div id="homePage">
+<div class="main">
+<div class="content">
+
+<div id="adTop" class="ad-box">Top Advertisement</div>
+
+<div id="newsContainer"></div>
+
+</div>
+
+<div class="sidebar">
+<div class="ad-box" id="adSide">Sidebar Advertisement</div>
+</div>
+</div>
+</div>
+
+<!-- ABOUT -->
+<div id="aboutPage" class="hidden">
+<h2>About Us</h2>
+<p>NewsNova India is a trusted digital news portal delivering fast and accurate news.</p>
+</div>
+
+<!-- CONTACT -->
+<div id="contactPage" class="hidden">
+<h2>Contact Us</h2>
+<input placeholder="Your Name">
+<input placeholder="Your Email">
+<textarea placeholder="Your Message"></textarea>
+<button>Send Message</button>
+</div>
+
+<!-- PRIVACY -->
+<div id="privacyPage" class="hidden">
+<h2>Privacy Policy</h2>
+<p>We may collect cookies for analytics and advertising purposes.</p>
+</div>
+
+<!-- DISCLAIMER -->
+<div id="disclaimerPage" class="hidden">
+<h2>Disclaimer</h2>
+<p>All news content is for informational purposes only.</p>
+</div>
+
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="loginBox" class="login-box hidden">
+<h2>Admin Login</h2>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="admin-panel">
+<h2>Admin Dashboard</h2>
+
+<h3>Add News</h3>
+<input type="text" id="newsTitle" placeholder="News Title">
+<select id="newsCategory">
+<option>Politics</option>
+<option>Sports</option>
+<option>Technology</option>
+<option>Entertainment</option>
+</select>
+<textarea id="newsContent" placeholder="News Content"></textarea>
+<input type="text" id="newsImage" placeholder="Image URL">
+<button onclick="addNews()">Publish News</button>
+
+<h3>All News</h3>
+<div id="adminNewsList"></div>
+
+<h3>Advertisement Code</h3>
+<textarea id="adCode" placeholder="Paste Ad Code Here"></textarea>
+<button onclick="saveAd()">Save Ad Code</button>
+
+<br><br>
+<button onclick="logout()">Logout</button>
+</div>
+
+<footer>
+<p>© 2026 NewsNova India | All Rights Reserved</p>
+<p>
+<a onclick="showPage('privacy')" style="color:#ffcc00;cursor:pointer">Privacy Policy</a> |
+<a onclick="showPage('disclaimer')" style="color:#ffcc00;cursor:pointer">Disclaimer</a>
+</p>
+</footer>
+
+<script>
+const adminUser="admin";
+const adminPass="12345";
+
+function showPage(page){
+document.querySelectorAll("[id$='Page']").forEach(p=>p.classList.add("hidden"));
+document.getElementById(page+"Page").classList.remove("hidden");
+window.scrollTo(0,0);
+}
+
+function showAdmin(){
+document.getElementById("loginBox").classList.remove("hidden");
+window.scrollTo(0,0);
+}
+
+function login(){
+let u=document.getElementById("username").value;
+let p=document.getElementById("password").value;
+if(u===adminUser && p===adminPass){
+document.getElementById("loginBox").classList.add("hidden");
+document.getElementById("adminPanel").style.display="block";
+loadAdminNews();
+}else{alert("Invalid Login");}
+}
+
+function logout(){
+document.getElementById("adminPanel").style.display="none";
+}
+
+function addNews(){
+let title=document.getElementById("newsTitle").value;
+let content=document.getElementById("newsContent").value;
+let image=document.getElementById("newsImage").value;
+let category=document.getElementById("newsCategory").value;
+
+let news=JSON.parse(localStorage.getItem("news"))||[];
+news.push({title,content,image,category});
+localStorage.setItem("news",JSON.stringify(news));
+alert("News Published");
+loadHomeNews();
+loadAdminNews();
+}
+
+function loadHomeNews(categoryFilter=null){
+let container=document.getElementById("newsContainer");
+container.innerHTML="";
+let news=JSON.parse(localStorage.getItem("news"))||[];
+
+news.reverse().forEach((item)=>{
+if(!categoryFilter || item.category===categoryFilter){
+container.innerHTML+=`
+<div class="news-card">
+<img src="${item.image}">
+<h2>${item.title}</h2>
+<small>${item.category}</small>
+<p>${item.content}</p>
+</div>`;
+}
+});
+}
+
+function filterCategory(cat){
+showPage('home');
+loadHomeNews(cat);
+}
+
+function loadAdminNews(){
+let list=document.getElementById("adminNewsList");
+list.innerHTML="";
+let news=JSON.parse(localStorage.getItem("news"))||[];
+
+news.forEach((item,index)=>{
+list.innerHTML+=`
+<div class="news-card">
+<strong>${item.title}</strong>
+<button onclick="deleteNews(${index})">Delete</button>
+</div>`;
+});
+}
+
+function deleteNews(index){
+let news=JSON.parse(localStorage.getItem("news"));
+news.splice(index,1);
+localStorage.setItem("news",JSON.stringify(news));
+loadHomeNews();
+loadAdminNews();
+}
+
+function saveAd(){
+let ad=document.getElementById("adCode").value;
+localStorage.setItem("adCode",ad);
+document.getElementById("adTop").innerHTML=ad;
+document.getElementById("adSide").innerHTML=ad;
+alert("Ad Saved");
+}
+
+window.onload=function(){
+let ad=localStorage.getItem("adCode");
+if(ad){
+document.getElementById("adTop").innerHTML=ad;
+document.getElementById("adSide").innerHTML=ad;
+}
+loadHomeNews();
+}
+</script>
+
+</body>
+</html>
